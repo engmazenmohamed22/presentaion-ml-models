@@ -8,6 +8,7 @@ Run with:
 """
 
 import io
+import os
 import pickle
 import base64
 import warnings
@@ -16,6 +17,10 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+# Always find models/ relative to this file, no matter where Railway runs from
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, "models")
 
 warnings.filterwarnings("ignore")
 
@@ -81,33 +86,33 @@ def load_models():
     global clf_models, clf_scaler, clf_features, clf_results
     global reg_pipelines, reg_results, reg_numeric_cols, reg_categorical_cols
 
+    print(f"[INFO] Looking for models in: {MODELS_DIR}")
+
     try:
-        with open("models/clf_models.pkl", "rb") as f:
+        with open(os.path.join(MODELS_DIR, "clf_models.pkl"), "rb") as f:
             clf_models = pickle.load(f)
-        with open("models/clf_scaler.pkl", "rb") as f:
+        with open(os.path.join(MODELS_DIR, "clf_scaler.pkl"), "rb") as f:
             clf_scaler = pickle.load(f)
-        with open("models/clf_features.pkl", "rb") as f:
+        with open(os.path.join(MODELS_DIR, "clf_features.pkl"), "rb") as f:
             clf_features = pickle.load(f)
-        with open("models/clf_results.pkl", "rb") as f:
+        with open(os.path.join(MODELS_DIR, "clf_results.pkl"), "rb") as f:
             clf_results = pickle.load(f)
         print("[OK] Classification models loaded from pkl.")
     except FileNotFoundError as e:
         print(f"[ERROR] Classification pkl not found: {e}")
-        print("  → Run save_models.py locally first, then upload the models/ folder.")
 
     try:
-        with open("models/reg_pipelines.pkl", "rb") as f:
+        with open(os.path.join(MODELS_DIR, "reg_pipelines.pkl"), "rb") as f:
             reg_pipelines = pickle.load(f)
-        with open("models/reg_results.pkl", "rb") as f:
+        with open(os.path.join(MODELS_DIR, "reg_results.pkl"), "rb") as f:
             reg_results = pickle.load(f)
-        with open("models/reg_meta.pkl", "rb") as f:
+        with open(os.path.join(MODELS_DIR, "reg_meta.pkl"), "rb") as f:
             meta = pickle.load(f)
             reg_numeric_cols     = meta["numeric_cols"]
             reg_categorical_cols = meta["categorical_cols"]
         print("[OK] Regression models loaded from pkl.")
     except FileNotFoundError as e:
         print(f"[ERROR] Regression pkl not found: {e}")
-        print("  → Run save_models.py locally first, then upload the models/ folder.")
 
 
 # ═══════════════════════════════════════════════════════════════
