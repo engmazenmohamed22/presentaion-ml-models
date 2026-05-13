@@ -23,8 +23,9 @@ warnings.filterwarnings("ignore")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse, Response
+from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -43,21 +44,17 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
-    max_age=86400,
 )
 
-# Explicit OPTIONS handler - must be registered BEFORE any other routes
-@app.options("/{full_path:path}")
-async def options_handler(full_path: str):
-    return Response(
-        status_code=200,
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
-            "Access-Control-Max-Age": "86400",
-        }
-    )
+# Serve frontend
+_static = os.path.join(BASE_DIR, "static")
+if os.path.exists(_static):
+    app.mount("/static", StaticFiles(directory=_static), name="static")
+
+@app.get("/", include_in_schema=False)
+async def serve_index():
+    return FileResponse(os.path.join(BASE_DIR, "static", "index.html"))
+
 
 # ═══════════════════════════════════════════════════════════════
 # GLOBAL STATE — loaded from pkl files
