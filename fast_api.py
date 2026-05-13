@@ -8,23 +8,23 @@ Run with:
 """
 
 import io
+import os
 import pickle
 import base64
 import warnings
 import numpy as np
 import pandas as pd
-import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+warnings.filterwarnings("ignore")
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 
-warnings.filterwarnings("ignore")
-
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import Response
+from fastapi.responses import JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -46,19 +46,18 @@ app.add_middleware(
     max_age=86400,
 )
 
-# Handle preflight CORS requests explicitly
-@app.options("/{rest_of_path:path}")
-async def preflight_handler(rest_of_path: str, request: Request):
+# Explicit OPTIONS handler - must be registered BEFORE any other routes
+@app.options("/{full_path:path}")
+async def options_handler(full_path: str):
     return Response(
         status_code=200,
         headers={
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
             "Access-Control-Max-Age": "86400",
-        },
+        }
     )
-
 
 # ═══════════════════════════════════════════════════════════════
 # GLOBAL STATE — loaded from pkl files
@@ -101,8 +100,6 @@ def load_models():
     global clf_models, clf_scaler, clf_features, clf_results
     global reg_pipelines, reg_results, reg_numeric_cols, reg_categorical_cols
 
-    print(f"[INFO] Models dir: {MODELS_DIR}")
-    print(f"[INFO] Files found: {os.listdir(MODELS_DIR) if os.path.exists(MODELS_DIR) else 'NOT FOUND'}")
     try:
         with open(os.path.join(MODELS_DIR, "clf_models.pkl"), "rb") as f:
             clf_models = pickle.load(f)
@@ -113,8 +110,9 @@ def load_models():
         with open(os.path.join(MODELS_DIR, "clf_results.pkl"), "rb") as f:
             clf_results = pickle.load(f)
         print("[OK] Classification models loaded from pkl.")
-    except Exception as e:
-        print(f"[ERROR] Classification: {e}")
+    except FileNotFoundError as e:
+        print(f"[ERROR] Classification pkl not found: {e}")
+        print("  → Run save_models.py locally first, then upload the models/ folder.")
 
     try:
         with open(os.path.join(MODELS_DIR, "reg_pipelines.pkl"), "rb") as f:
@@ -126,8 +124,9 @@ def load_models():
             reg_numeric_cols     = meta["numeric_cols"]
             reg_categorical_cols = meta["categorical_cols"]
         print("[OK] Regression models loaded from pkl.")
-    except Exception as e:
-        print(f"[ERROR] Regression: {e}")
+    except FileNotFoundError as e:
+        print(f"[ERROR] Regression pkl not found: {e}")
+        print("  → Run save_models.py locally first, then upload the models/ folder.")
 
 
 # ═══════════════════════════════════════════════════════════════
