@@ -18,13 +18,13 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# Always resolve models/ relative to this file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 
 warnings.filterwarnings("ignore")
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -41,11 +41,24 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
-    max_age=600,
+    max_age=86400,
 )
+
+# Handle preflight CORS requests explicitly
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str, request: Request):
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "86400",
+        },
+    )
+
 
 # ═══════════════════════════════════════════════════════════════
 # GLOBAL STATE — loaded from pkl files
@@ -89,8 +102,7 @@ def load_models():
     global reg_pipelines, reg_results, reg_numeric_cols, reg_categorical_cols
 
     print(f"[INFO] Models dir: {MODELS_DIR}")
-    print(f"[INFO] Files found: {os.listdir(MODELS_DIR) if os.path.exists(MODELS_DIR) else 'DIR NOT FOUND'}")
-
+    print(f"[INFO] Files found: {os.listdir(MODELS_DIR) if os.path.exists(MODELS_DIR) else 'NOT FOUND'}")
     try:
         with open(os.path.join(MODELS_DIR, "clf_models.pkl"), "rb") as f:
             clf_models = pickle.load(f)
@@ -102,7 +114,7 @@ def load_models():
             clf_results = pickle.load(f)
         print("[OK] Classification models loaded from pkl.")
     except Exception as e:
-        print(f"[ERROR] Classification pkl failed: {e}")
+        print(f"[ERROR] Classification: {e}")
 
     try:
         with open(os.path.join(MODELS_DIR, "reg_pipelines.pkl"), "rb") as f:
@@ -115,7 +127,7 @@ def load_models():
             reg_categorical_cols = meta["categorical_cols"]
         print("[OK] Regression models loaded from pkl.")
     except Exception as e:
-        print(f"[ERROR] Regression pkl failed: {e}")
+        print(f"[ERROR] Regression: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════
