@@ -1,0 +1,2627 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ML Project — Minia University</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ═══════════════════════════════════════════════════
+   GLOBAL RESET & VARIABLES
+═══════════════════════════════════════════════════ */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0a0d14;
+        --surface: #111827;
+        --card: #1a2235;
+        --border: #1f2d44;
+        --text: #e2e8f0;
+        --muted: #7c8fa8;
+        --accent: #00d4ff;
+        --accent2: #7c3aed;
+        --green: #10b981;
+        --red: #ef4444;
+        --gold: #f59e0b;
+        --font-head: "Syne", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+        --font-body: "Inter", sans-serif;
+        --radius: 12px;
+        --transition: 0.25s ease;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.65;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        height: 60px;
+        background: rgba(10, 13, 20, 0.85);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-logo {
+        font-family: var(--font-head);
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--accent);
+        letter-spacing: -0.02em;
+      }
+      .nav-links {
+        display: flex;
+        gap: 0.25rem;
+      }
+      .nav-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        font-family: var(--font-body);
+        font-size: 0.82rem;
+        padding: 0.4rem 0.85rem;
+        border-radius: 6px;
+        transition: var(--transition);
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+      .nav-btn:hover,
+      .nav-btn.active {
+        background: var(--border);
+        color: var(--text);
+      }
+      .nav-btn.active {
+        color: var(--accent);
+      }
+
+      /* ═══════════════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════════════ */
+      .page {
+        display: none;
+        min-height: 100vh;
+        padding-top: 70px;
+      }
+      .page.active {
+        display: block;
+      }
+
+      /* ═══════════════════════════════════════════════════
+   HOME PAGE
+═══════════════════════════════════════════════════ */
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 5rem 2rem 4rem;
+        text-align: center;
+        background: radial-gradient(
+          ellipse 80% 60% at 50% 0%,
+          rgba(0, 212, 255, 0.07) 0%,
+          transparent 70%
+        );
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(0, 212, 255, 0.08);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        color: var(--accent);
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        padding: 0.35rem 1rem;
+        border-radius: 999px;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .hero h1 {
+        font-family: var(--font-head);
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: 1rem;
+      }
+      .hero h1 span {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-sub {
+        color: var(--muted);
+        font-size: 1.05rem;
+        max-width: 580px;
+        margin: 0 auto 2.5rem;
+        font-weight: 300;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        max-width: 800px;
+        margin: 0 auto 3rem;
+      }
+      .hero-stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+      }
+      .hero-stat .num {
+        font-family: var(--font-head);
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .hero-stat .label {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 0.3rem;
+      }
+
+      /* Project Cards */
+      .projects-section {
+        padding: 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .section-title {
+        font-family: var(--font-head);
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .proj-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      .proj-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+      }
+      .proj-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          transparent 60%,
+          rgba(0, 212, 255, 0.04)
+        );
+        pointer-events: none;
+      }
+      .proj-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0, 212, 255, 0.1);
+      }
+      .proj-card.reg:hover {
+        border-color: var(--accent2);
+        box-shadow: 0 12px 40px rgba(124, 58, 237, 0.1);
+      }
+      .proj-card .tag {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0.25rem 0.65rem;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 0.9rem;
+      }
+      .tag-clf {
+        background: rgba(0, 212, 255, 0.1);
+        color: var(--accent);
+      }
+      .tag-reg {
+        background: rgba(124, 58, 237, 0.1);
+        color: #a78bfa;
+      }
+      .proj-card h3 {
+        font-family: var(--font-head);
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      .proj-card p {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+      }
+      .proj-card .algo-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-bottom: 1.25rem;
+      }
+      .algo-pill {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: var(--font-mono);
+      }
+      .card-arrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.82rem;
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      /* Team Section */
+      .team-section {
+        padding: 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+      .team-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        text-align: center;
+      }
+      .team-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin: 0 auto 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-head);
+        font-size: 1.1rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #0a0d14;
+      }
+      .team-card h4 {
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+      .team-card .role {
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+
+      /* Instructor */
+      .instructor-bar {
+        background: linear-gradient(
+          135deg,
+          var(--card),
+          rgba(124, 58, 237, 0.15)
+        );
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.75rem;
+        max-width: 1100px;
+        margin: 0 auto 2rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .instructor-bar .badge {
+        background: var(--accent2);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.2rem 0.55rem;
+        border-radius: 4px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .instructor-bar h4 {
+        font-family: var(--font-head);
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+      .instructor-bar p {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      /* ═══════════════════════════════════════════════════
+   SHARED SECTION STYLES
+═══════════════════════════════════════════════════ */
+      .page-inner {
+        padding: 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .page-header {
+        padding: 2.5rem 2rem;
+        background: radial-gradient(
+          ellipse 70% 80% at 20% 50%,
+          rgba(0, 212, 255, 0.06) 0%,
+          transparent 70%
+        );
+        border-bottom: 1px solid var(--border);
+      }
+      .page-header.reg-header {
+        background: radial-gradient(
+          ellipse 70% 80% at 20% 50%,
+          rgba(124, 58, 237, 0.08) 0%,
+          transparent 70%
+        );
+      }
+      .page-header .breadcrumb {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-bottom: 0.75rem;
+      }
+      .page-header h2 {
+        font-family: var(--font-head);
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .page-header p {
+        color: var(--muted);
+        margin-top: 0.4rem;
+        max-width: 600px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .info-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+      }
+      .info-card .ic-label {
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.35rem;
+        font-family: var(--font-mono);
+      }
+      .info-card .ic-value {
+        font-family: var(--font-head);
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+      .info-card .ic-sub {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 0.2rem;
+      }
+      .ic-accent {
+        color: var(--accent);
+      }
+      .ic-green {
+        color: var(--green);
+      }
+      .ic-gold {
+        color: var(--gold);
+      }
+      .ic-purple {
+        color: #a78bfa;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 0.25rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.5rem;
+      }
+      .tab-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: var(--transition);
+      }
+      .tab-btn:hover {
+        background: var(--surface);
+        color: var(--text);
+      }
+      .tab-btn.active {
+        background: var(--surface);
+        color: var(--accent);
+        border-bottom: 2px solid var(--accent);
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* Charts */
+      .chart-placeholder {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 340px;
+        margin-bottom: 1.5rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        flex-direction: column;
+        gap: 0.75rem;
+        overflow: hidden;
+      }
+      .chart-placeholder img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .load-btn {
+        background: var(--accent);
+        color: #0a0d14;
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1.4rem;
+        cursor: pointer;
+        font-weight: 700;
+        font-family: var(--font-head);
+        font-size: 0.85rem;
+        transition: var(--transition);
+      }
+      .load-btn:hover {
+        opacity: 0.85;
+      }
+      .load-btn.purple {
+        background: var(--accent2);
+        color: #fff;
+      }
+      .load-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Model comparison table */
+      .model-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+      }
+      .model-table th {
+        text-align: left;
+        padding: 0.6rem 1rem;
+        font-size: 0.75rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-bottom: 1px solid var(--border);
+      }
+      .model-table td {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .model-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .badge-best {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--gold);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+      }
+      .acc-bar {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+        margin-top: 4px;
+        overflow: hidden;
+      }
+      .acc-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: 0.5s ease;
+        background: var(--accent);
+      }
+      .acc-fill.gold {
+        background: var(--gold);
+      }
+      .acc-fill.green {
+        background: var(--green);
+      }
+
+      /* Algorithm Cards */
+      .algo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .algo-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+      }
+      .algo-card .algo-name {
+        font-family: var(--font-head);
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+      }
+      .algo-card .algo-desc {
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.55;
+        margin-bottom: 0.75rem;
+      }
+      .algo-metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.78rem;
+        padding: 0.25rem 0;
+        border-top: 1px solid var(--border);
+      }
+      .algo-metric .m-label {
+        color: var(--muted);
+      }
+      .algo-metric .m-value {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        color: var(--green);
+      }
+
+      /* Predict Form */
+      .predict-form {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        margin-bottom: 1.5rem;
+      }
+      .predict-form h3 {
+        font-family: var(--font-head);
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .form-field label {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.4rem;
+      }
+      .form-field input,
+      .form-field select {
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 0.55rem 0.75rem;
+        border-radius: 8px;
+        font-family: var(--font-body);
+        font-size: 0.88rem;
+        transition: var(--transition);
+      }
+      .form-field input:focus,
+      .form-field select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+      }
+      .form-field select option {
+        background: var(--surface);
+        color: var(--text);
+      }
+
+      /* Result box */
+      .result-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-top: 1rem;
+      }
+      .result-box .verdict {
+        font-family: var(--font-head);
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+      }
+      .verdict.danger {
+        color: var(--red);
+      }
+      .verdict.safe {
+        color: var(--green);
+      }
+      .result-chart {
+        margin-top: 1rem;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .result-chart img {
+        width: 100%;
+        display: block;
+      }
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Pipeline Viz */
+      .pipeline {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .pipe-step {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.78rem;
+        font-family: var(--font-mono);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .pipe-step .icon {
+        font-size: 1rem;
+      }
+      .pipe-arrow {
+        color: var(--muted);
+        font-size: 1.2rem;
+      }
+
+      /* Data viz cards */
+      .vis-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .vis-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+      }
+      .vis-card h4 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .mini-bar-wrap {
+        margin-top: 0.5rem;
+      }
+      .mini-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.45rem;
+        font-size: 0.78rem;
+      }
+      .mini-bar .mb-label {
+        width: 130px;
+        color: var(--muted);
+        font-size: 0.75rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mini-bar-track {
+        flex: 1;
+        height: 8px;
+        background: var(--surface);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .mini-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 1s ease;
+      }
+      .mini-bar .mb-val {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        width: 50px;
+        text-align: right;
+      }
+
+      /* Feature table */
+      .feature-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+        margin-bottom: 1rem;
+      }
+      .feature-table th {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-family: var(--font-mono);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+      }
+      .feature-table td {
+        padding: 0.6rem 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .feature-table tr:last-child td {
+        border-bottom: none;
+      }
+      .type-badge {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        font-family: var(--font-mono);
+      }
+      .tb-num {
+        background: rgba(0, 212, 255, 0.1);
+        color: var(--accent);
+      }
+      .tb-cat {
+        background: rgba(124, 58, 237, 0.1);
+        color: #a78bfa;
+      }
+      .tb-target {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--green);
+      }
+
+      /* Conclusion */
+      .conclusion-card {
+        background: linear-gradient(
+          135deg,
+          var(--card),
+          rgba(0, 212, 255, 0.05)
+        );
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+      }
+      .conclusion-card h3 {
+        font-family: var(--font-head);
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+      .findings {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 0.75rem;
+      }
+      .finding {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 0.85rem;
+        border-radius: 8px;
+      }
+      .finding .fi-icon {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+      .finding .fi-text {
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .finding .fi-text strong {
+        color: var(--text);
+        display: block;
+        margin-bottom: 0.2rem;
+      }
+
+      /* Status dot */
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+        display: inline-block;
+        margin-right: 0.4rem;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 600px) {
+        nav {
+          padding: 0 1rem;
+        }
+        .hero {
+          padding: 3rem 1rem 2.5rem;
+        }
+        .page-inner {
+          padding: 1rem;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+    <nav>
+      <div class="nav-logo">⬡ ML·Project</div>
+      <div class="nav-links">
+        <button class="nav-btn active" onclick="showPage('home')">Home</button>
+        <button class="nav-btn" onclick="showPage('clf')">
+          Classification
+        </button>
+        <button class="nav-btn" onclick="showPage('reg')">Regression</button>
+      </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════════════════════ -->
+    <div id="page-home" class="page active">
+      <div class="hero">
+        <div class="hero-badge">
+          🎓 Minia University · Faculty of Computers &amp; Information
+        </div>
+        <h1>Machine Learning<br /><span>Project Report</span></h1>
+        <p class="hero-sub">
+          Two end-to-end ML pipelines — credit risk classification and house
+          price regression — built, analyzed, and compared.
+        </p>
+        <div class="hero-grid">
+          <div class="hero-stat">
+            <div class="num">5</div>
+            <div class="label">Classification Algorithms</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">3</div>
+            <div class="label">Regression Models</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">2</div>
+            <div class="label">Real-world Datasets</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">14+</div>
+            <div class="label">Visualizations</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructor -->
+      <div style="padding: 0 2rem; max-width: 1100px; margin: 0 auto 1.5rem">
+        <div class="instructor-bar">
+          <div>
+            <div
+              style="
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+                margin-bottom: 0.3rem;
+              "
+            >
+              <span class="badge">Supervisor</span>
+              <span class="badge" style="background: #0891b2">Section TA</span>
+            </div>
+            <h4>Prof. Marwa Mamdouh</h4>
+            <p>Instructor · Department of Computer Science</p>
+          </div>
+          <div style="margin-left: auto; text-align: right">
+            <span
+              class="badge"
+              style="
+                background: rgba(0, 212, 255, 0.1);
+                color: var(--accent);
+                border: 1px solid rgba(0, 212, 255, 0.2);
+              "
+              >Eng. Basmala Magde</span
+            >
+            <p
+              style="
+                font-size: 0.75rem;
+                color: var(--muted);
+                margin-top: 0.3rem;
+              "
+            >
+              Teaching Assistant
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="projects-section">
+        <div class="section-title">Projects Overview</div>
+        <div class="proj-grid">
+          <!-- Classification Card -->
+          <div class="proj-card" onclick="showPage('clf')">
+            <span class="tag tag-clf">Classification</span>
+            <h3>💳 Credit Risk Prediction</h3>
+            <p>
+              Predict whether a loan applicant will default (1) or not (0) based
+              on their financial profile. Dataset: 32,581 records × 12 features
+              from Kaggle.
+            </p>
+            <div class="algo-list">
+              <span class="algo-pill">Logistic Regression</span>
+              <span class="algo-pill">KNN</span>
+              <span class="algo-pill">Decision Tree</span>
+              <span class="algo-pill">Naive Bayes</span>
+              <span class="algo-pill">SVM</span>
+            </div>
+            <div class="card-arrow">Explore &amp; Test Model →</div>
+          </div>
+
+          <!-- Regression Card -->
+          <div class="proj-card reg" onclick="showPage('reg')">
+            <span class="tag tag-reg">Regression</span>
+            <h3>🏠 House Prices Prediction</h3>
+            <p>
+              Predict the final sale price of residential properties. Dataset:
+              Ames Housing (train.csv) with 80+ features including quality,
+              area, and neighborhood.
+            </p>
+            <div class="algo-list">
+              <span class="algo-pill">Linear Regression</span>
+              <span class="algo-pill">Ridge Regression</span>
+              <span class="algo-pill">SVR</span>
+              <span class="algo-pill">Polynomial Reg</span>
+            </div>
+            <div class="card-arrow" style="color: #a78bfa">
+              Explore &amp; Test Model →
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline Overview -->
+      <div class="projects-section" style="margin-top: 1rem">
+        <div class="section-title">General ML Pipeline</div>
+        <div class="pipeline">
+          <div class="pipe-step">
+            <span class="icon">📂</span> Data Collection
+          </div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step"><span class="icon">🔍</span> EDA</div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step"><span class="icon">🧹</span> Cleaning</div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step"><span class="icon">⚙️</span> Feature Eng.</div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step">
+            <span class="icon">📊</span> Preprocessing
+          </div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step">
+            <span class="icon">🤖</span> Model Training
+          </div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step"><span class="icon">📈</span> Evaluation</div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step"><span class="icon">🚀</span> Deployment</div>
+        </div>
+      </div>
+
+      <!-- Team -->
+      <div class="team-section">
+        <div class="section-title">Team Members</div>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar">M</div>
+            <h4>Mazen Mohamed</h4>
+            <div class="role">ML Engineer</div>
+          </div>
+          <div class="team-card">
+            <div
+              class="team-avatar"
+              style="background: linear-gradient(135deg, #10b981, #059669)"
+            >
+              A
+            </div>
+            <h4>Anas Mohamed</h4>
+            <div class="role">Data Analyst</div>
+          </div>
+          <div class="team-card">
+            <div
+              class="team-avatar"
+              style="background: linear-gradient(135deg, #f59e0b, #d97706)"
+            >
+              A
+            </div>
+            <h4>Abdelrhman Sami</h4>
+            <div class="role">Data Engineer</div>
+          </div>
+          <div class="team-card">
+            <div
+              class="team-avatar"
+              style="background: linear-gradient(135deg, #ec4899, #db2777)"
+            >
+              S
+            </div>
+            <h4>Shady Ibrahim</h4>
+            <div class="role">Visualization</div>
+          </div>
+          <div class="team-card">
+            <div
+              class="team-avatar"
+              style="background: linear-gradient(135deg, #8b5cf6, #6d28d9)"
+            >
+              A
+            </div>
+            <h4>Amr Abdullah</h4>
+            <div class="role">Model Tuning</div>
+          </div>
+          <div class="team-card">
+            <div
+              class="team-avatar"
+              style="background: linear-gradient(135deg, #06b6d4, #0891b2)"
+            >
+              Y
+            </div>
+            <h4>Youssef Mohamed</h4>
+            <div class="role">Report &amp; Docs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+     CLASSIFICATION PAGE
+═══════════════════════════════════════════════════ -->
+    <div id="page-clf" class="page">
+      <div class="page-header">
+        <div class="breadcrumb">
+          ←
+          <span
+            onclick="showPage('home')"
+            style="cursor: pointer; text-decoration: underline"
+            >Home</span
+          >
+          / Classification
+        </div>
+        <h2>💳 Credit Risk Prediction</h2>
+        <p>
+          Binary classification: predict loan default (1) vs. no default (0)
+          using 5 algorithms.
+        </p>
+      </div>
+
+      <div class="page-inner">
+        <!-- Stats Row -->
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-label">Dataset Size</div>
+            <div class="ic-value ic-accent">32,581</div>
+            <div class="ic-sub">Records · 12 features</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Best Accuracy</div>
+            <div class="ic-value ic-gold">~92%</div>
+            <div class="ic-sub">Decision Tree / SVM</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Target Variable</div>
+            <div class="ic-value ic-green">loan_status</div>
+            <div class="ic-sub">0 = Safe · 1 = Default</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Class Balance</div>
+            <div class="ic-value ic-purple">Fixed ✓</div>
+            <div class="ic-sub">Oversampling applied</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('clf', 'overview')">
+            Overview
+          </button>
+          <button class="tab-btn" onclick="switchTab('clf', 'data')">
+            Data &amp; EDA
+          </button>
+          <button class="tab-btn" onclick="switchTab('clf', 'models')">
+            Model Comparison
+          </button>
+          <button class="tab-btn" onclick="switchTab('clf', 'predict')">
+            🔬 Test Model
+          </button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="clf-tab-overview" class="tab-panel active">
+          <div class="section-title" style="font-size: 1.1rem">
+            Dataset Features
+          </div>
+          <table class="feature-table">
+            <thead>
+              <tr>
+                <th>Column</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>person_age</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Age of the applicant</td>
+              </tr>
+              <tr>
+                <td><code>person_income</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Annual income (USD)</td>
+              </tr>
+              <tr>
+                <td><code>person_home_ownership</code></td>
+                <td><span class="type-badge tb-cat">Categorical</span></td>
+                <td>RENT / OWN / MORTGAGE / OTHER</td>
+              </tr>
+              <tr>
+                <td><code>person_emp_length</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Employment length (years)</td>
+              </tr>
+              <tr>
+                <td><code>loan_intent</code></td>
+                <td><span class="type-badge tb-cat">Categorical</span></td>
+                <td>Purpose of the loan</td>
+              </tr>
+              <tr>
+                <td><code>loan_grade</code></td>
+                <td><span class="type-badge tb-cat">Categorical</span></td>
+                <td>Credit grade (A–G, A=best)</td>
+              </tr>
+              <tr>
+                <td><code>loan_amnt</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Loan amount requested (USD)</td>
+              </tr>
+              <tr>
+                <td><code>loan_int_rate</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Interest rate (%)</td>
+              </tr>
+              <tr>
+                <td><code>loan_percent_income</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Loan amount as % of income</td>
+              </tr>
+              <tr>
+                <td><code>cb_person_default_on_file</code></td>
+                <td><span class="type-badge tb-cat">Categorical</span></td>
+                <td>Has person defaulted before?</td>
+              </tr>
+              <tr>
+                <td><code>cb_person_cred_hist_length</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Credit history length (years)</td>
+              </tr>
+              <tr>
+                <td><code>loan_status</code></td>
+                <td><span class="type-badge tb-target">Target</span></td>
+                <td>0 = No Default, 1 = Default</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-title" style="font-size: 1.1rem">
+            Engineered Features
+          </div>
+          <div class="algo-grid">
+            <div class="algo-card">
+              <div class="algo-name">debt_to_income</div>
+              <div class="algo-desc">
+                <code>loan_amnt / (person_income + 1)</code><br />Measures how
+                heavy the loan is relative to annual income. High ratio = higher
+                default risk.
+              </div>
+            </div>
+            <div class="algo-card">
+              <div class="algo-name">high_interest</div>
+              <div class="algo-desc">
+                Binary flag: <code>1</code> if <code>loan_int_rate > 15%</code>,
+                else <code>0</code>. Interest above 15% is considered high risk
+                in consumer lending.
+              </div>
+            </div>
+            <div class="algo-card">
+              <div class="algo-name">income_per_emp_year</div>
+              <div class="algo-desc">
+                <code>person_income / (person_emp_length + 1)</code
+                ><br />Earning efficiency — low value may indicate job
+                instability.
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title" style="font-size: 1.1rem">
+            Preprocessing Pipeline
+          </div>
+          <div class="pipeline" style="flex-wrap: wrap">
+            <div class="pipe-step">🗑 Drop Duplicates</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">🔢 Fix Outliers (age&gt;100)</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">📊 Fill NaN (median)</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">⚖️ Oversample Minority</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">🔡 Label Encode</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">📐 StandardScaler</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">✂️ 80/20 Split</div>
+          </div>
+        </div>
+
+        <!-- Data & EDA Tab -->
+        <div id="clf-tab-data" class="tab-panel">
+          <div class="vis-grid">
+            <div class="vis-card">
+              <h4>🎯 Default Rate Distribution</h4>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar">
+                  <div class="mb-label">No Default (0)</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 78%; background: var(--green)"
+                    ></div>
+                  </div>
+                  <div class="mb-val" style="color: var(--green)">78.2%</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Default (1)</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 22%; background: var(--red)"
+                    ></div>
+                  </div>
+                  <div class="mb-val" style="color: var(--red)">21.8%</div>
+                </div>
+              </div>
+              <p
+                style="
+                  font-size: 0.75rem;
+                  color: var(--muted);
+                  margin-top: 0.75rem;
+                "
+              >
+                Class imbalance detected → fixed via oversampling before
+                training.
+              </p>
+            </div>
+
+            <div class="vis-card">
+              <h4>🔑 Top Predictive Features</h4>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar">
+                  <div class="mb-label">loan_percent_income</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 90%; background: var(--red)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.90</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">loan_int_rate</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 80%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.80</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">loan_grade</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 75%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.75</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">cb_person_default</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 68%; background: var(--accent)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.68</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">debt_to_income</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 60%; background: var(--accent)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.60</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="vis-card">
+              <h4>📊 Loan Grade vs Default Rate</h4>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar">
+                  <div class="mb-label">Grade A (Best)</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 5%; background: var(--green)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">~5%</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Grade B</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 15%; background: var(--green)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">~15%</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Grade C</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 30%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">~30%</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Grade D</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 50%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">~50%</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Grade E–G</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 75%; background: var(--red)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">~75%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-placeholder" id="clf-eda-chart">
+            <div style="font-size: 2rem">📊</div>
+            <div>Load live accuracy chart from API</div>
+            <button class="load-btn" onclick="loadClfChart()">
+              Load Chart
+            </button>
+          </div>
+        </div>
+
+        <!-- Models Tab -->
+        <div id="clf-tab-models" class="tab-panel">
+          <div class="section-title" style="font-size: 1.1rem">
+            Algorithm Comparison
+          </div>
+
+          <div class="algo-grid">
+            <div class="algo-card">
+              <div class="algo-name">Logistic Regression</div>
+              <div class="algo-desc">
+                Linear model that estimates the probability of default using a
+                sigmoid function. Fast, interpretable, good baseline. Best for
+                linearly separable data.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical Accuracy</span
+                ><span class="m-value">~80–83%</span>
+              </div>
+            </div>
+            <div class="algo-card">
+              <div class="algo-name">K-Nearest Neighbors</div>
+              <div class="algo-desc">
+                Classifies by majority vote among K=7 nearest training samples.
+                Distance-weighted. Non-parametric — no assumptions about data
+                distribution.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical Accuracy</span
+                ><span class="m-value">~85–88%</span>
+              </div>
+            </div>
+            <div class="algo-card" style="border-color: var(--gold)">
+              <div class="algo-name">Decision Tree 🏆</div>
+              <div class="algo-desc">
+                Hierarchical if-else rules (max_depth=12). Highly interpretable.
+                Achieves top accuracy on this dataset due to non-linear decision
+                boundaries it can capture.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical Accuracy</span
+                ><span class="m-value" style="color: var(--gold)">~90–92%</span>
+              </div>
+            </div>
+            <div class="algo-card">
+              <div class="algo-name">Naive Bayes</div>
+              <div class="algo-desc">
+                Probabilistic classifier based on Bayes' theorem with feature
+                independence assumption. Very fast, works well with small data.
+                Slightly lower accuracy here.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical Accuracy</span
+                ><span class="m-value">~78–82%</span>
+              </div>
+            </div>
+            <div class="algo-card">
+              <div class="algo-name">SVM (RBF Kernel)</div>
+              <div class="algo-desc">
+                Finds the optimal hyperplane maximizing margin between classes.
+                RBF kernel maps to higher-dimensional space for non-linear
+                separation. Competitive with Decision Tree.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical Accuracy</span
+                ><span class="m-value">~89–92%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title" style="font-size: 1.1rem">
+            Live Results from API
+          </div>
+          <div id="clf-results-table">
+            <div class="chart-placeholder" style="height: 200px">
+              <div class="spinner"></div>
+              <div style="margin-top: 0.75rem">Loading from API...</div>
+              <button
+                class="load-btn"
+                onclick="loadClfResults()"
+                style="margin-top: 0.5rem"
+              >
+                Load Results
+              </button>
+            </div>
+          </div>
+
+          <div class="conclusion-card">
+            <h3>Why Decision Tree Performs Best</h3>
+            <div class="findings">
+              <div class="finding">
+                <div class="fi-icon">🌳</div>
+                <div class="fi-text">
+                  <strong>Non-linear Boundaries</strong>The data has complex,
+                  non-linear relationships between features and default —
+                  Decision Tree captures these with its hierarchical splits.
+                </div>
+              </div>
+              <div class="finding">
+                <div class="fi-icon">📊</div>
+                <div class="fi-text">
+                  <strong>Mixed Feature Types</strong>The dataset has
+                  categorical (loan_grade, intent) and numeric features. Trees
+                  handle both naturally without needing separate encoding
+                  pipelines.
+                </div>
+              </div>
+              <div class="finding">
+                <div class="fi-icon">⚖️</div>
+                <div class="fi-text">
+                  <strong>After Balancing</strong>With oversampling applied, the
+                  tree learns both classes equally well, boosting its
+                  minority-class recall significantly.
+                </div>
+              </div>
+              <div class="finding">
+                <div class="fi-icon">🔑</div>
+                <div class="fi-text">
+                  <strong>Feature Importance</strong>loan_percent_income and
+                  loan_int_rate are strong splitters — the tree exploits these
+                  threshold splits effectively.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Predict Tab -->
+        <div id="clf-tab-predict" class="tab-panel">
+          <div class="predict-form">
+            <h3>🔬 Test the Classification Model</h3>
+            <p
+              style="
+                font-size: 0.82rem;
+                color: var(--muted);
+                margin-bottom: 1.25rem;
+              "
+            >
+              Fill in the applicant's details below. The form uses default
+              values — modify any field and click Predict. The API at
+              <code style="color: var(--accent)"></code>
+              must be running.
+            </p>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Age</label
+                ><input
+                  id="c_age"
+                  type="number"
+                  value="30"
+                  min="18"
+                  max="100"
+                />
+              </div>
+              <div class="form-field">
+                <label>Annual Income ($)</label
+                ><input id="c_income" type="number" value="60000" />
+              </div>
+              <div class="form-field">
+                <label>Home Ownership</label>
+                <select id="c_home">
+                  <option>RENT</option>
+                  <option>OWN</option>
+                  <option>MORTGAGE</option>
+                  <option>OTHER</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Employment Length (yrs)</label
+                ><input id="c_emp" type="number" value="5" min="0" />
+              </div>
+              <div class="form-field">
+                <label>Loan Intent</label>
+                <select id="c_intent">
+                  <option>PERSONAL</option>
+                  <option>EDUCATION</option>
+                  <option>MEDICAL</option>
+                  <option>VENTURE</option>
+                  <option>HOMEIMPROVEMENT</option>
+                  <option>DEBTCONSOLIDATION</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Loan Grade</label>
+                <select id="c_grade">
+                  <option>A</option>
+                  <option selected>B</option>
+                  <option>C</option>
+                  <option>D</option>
+                  <option>E</option>
+                  <option>F</option>
+                  <option>G</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Loan Amount ($)</label
+                ><input id="c_amnt" type="number" value="10000" />
+              </div>
+              <div class="form-field">
+                <label>Interest Rate (%)</label
+                ><input id="c_rate" type="number" step="0.1" value="12.0" />
+              </div>
+              <div class="form-field">
+                <label>Loan % of Income</label
+                ><input id="c_pct" type="number" step="0.01" value="0.15" />
+              </div>
+              <div class="form-field">
+                <label>Previous Default</label>
+                <select id="c_prev">
+                  <option>N</option>
+                  <option>Y</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Credit History (yrs)</label
+                ><input id="c_cred" type="number" value="4" min="0" />
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+              <button
+                class="load-btn"
+                onclick="predictClassification()"
+                id="clf-pred-btn"
+              >
+                🚀 Predict Default Risk
+              </button>
+              <button
+                class="load-btn"
+                onclick="fillDefaultClf()"
+                style="
+                  background: var(--surface);
+                  color: var(--text);
+                  border: 1px solid var(--border);
+                "
+              >
+                Reset to Defaults
+              </button>
+            </div>
+          </div>
+          <div id="clf-result" style="display: none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+     REGRESSION PAGE
+═══════════════════════════════════════════════════ -->
+    <div id="page-reg" class="page">
+      <div class="page-header reg-header">
+        <div class="breadcrumb">
+          ←
+          <span
+            onclick="showPage('home')"
+            style="cursor: pointer; text-decoration: underline"
+            >Home</span
+          >
+          / Regression
+        </div>
+        <h2>🏠 House Prices Prediction</h2>
+        <p>
+          Multi-feature regression: predict residential sale prices using the
+          Ames Housing dataset.
+        </p>
+      </div>
+
+      <div class="page-inner">
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-label">Dataset</div>
+            <div class="ic-value ic-purple">Ames Housing</div>
+            <div class="ic-sub">1460 rows · 80 features</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Best R² Score</div>
+            <div class="ic-value ic-gold">~0.88+</div>
+            <div class="ic-sub">Ridge / SVR</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Target Variable</div>
+            <div class="ic-value ic-accent">SalePrice</div>
+            <div class="ic-sub">USD — log-transformed</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Val Split</div>
+            <div class="ic-value ic-green">80/20</div>
+            <div class="ic-sub">Random state = 42</div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('reg', 'overview')">
+            Overview
+          </button>
+          <button class="tab-btn" onclick="switchTab('reg', 'data')">
+            Data &amp; EDA
+          </button>
+          <button class="tab-btn" onclick="switchTab('reg', 'models')">
+            Model Comparison
+          </button>
+          <button class="tab-btn" onclick="switchTab('reg', 'predict')">
+            🔬 Test Model
+          </button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="reg-tab-overview" class="tab-panel active">
+          <div class="section-title" style="font-size: 1.1rem">
+            Key Features Used
+          </div>
+          <table class="feature-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>OverallQual</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Overall material and finish quality (1–10)</td>
+              </tr>
+              <tr>
+                <td><code>GrLivArea</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Above-grade living area (sq ft)</td>
+              </tr>
+              <tr>
+                <td><code>GarageCars</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Garage capacity in car spaces</td>
+              </tr>
+              <tr>
+                <td><code>TotalBsmtSF</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Total basement area (sq ft)</td>
+              </tr>
+              <tr>
+                <td><code>YearBuilt</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Year of original construction</td>
+              </tr>
+              <tr>
+                <td><code>Neighborhood</code></td>
+                <td><span class="type-badge tb-cat">Categorical</span></td>
+                <td>Physical location in Ames city</td>
+              </tr>
+              <tr>
+                <td><code>LotArea</code></td>
+                <td><span class="type-badge tb-num">Numeric</span></td>
+                <td>Lot size in square feet</td>
+              </tr>
+              <tr>
+                <td><code>SalePrice</code></td>
+                <td><span class="type-badge tb-target">Target</span></td>
+                <td>Final sale price (USD) — log-transformed</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-title" style="font-size: 1.1rem">
+            Preprocessing Pipeline
+          </div>
+          <div class="pipeline" style="flex-wrap: wrap">
+            <div class="pipe-step">📊 Numeric Impute (median)</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">📐 StandardScaler</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">🔡 OneHotEncoder (cat)</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">🔄 log1p(SalePrice)</div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">✂️ 80/20 Split</div>
+          </div>
+
+          <p
+            style="
+              font-size: 0.83rem;
+              color: var(--muted);
+              margin-bottom: 1.5rem;
+            "
+          >
+            All preprocessing is wrapped inside scikit-learn
+            <code>Pipeline</code> objects using
+            <code>ColumnTransformer</code> for numeric and categorical features
+            separately. This prevents any data leakage from the validation set.
+            The target <code>SalePrice</code> is log-transformed via
+            <code
+              >TransformedTargetRegressor(func=np.log1p,
+              inverse_func=np.expm1)</code
+            >
+            to normalize its right-skewed distribution.
+          </p>
+        </div>
+
+        <!-- Data EDA Tab -->
+        <div id="reg-tab-data" class="tab-panel">
+          <div class="vis-grid">
+            <div class="vis-card">
+              <h4>📈 SalePrice Distribution</h4>
+              <p style="font-size: 0.78rem; color: var(--muted)">
+                SalePrice is right-skewed with mean ~$180K. Log transformation
+                normalizes it to near-Gaussian.
+              </p>
+              <div class="mini-bar-wrap" style="margin-top: 0.75rem">
+                <div class="mini-bar">
+                  <div class="mb-label">Min</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 5%; background: #3b82f6"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$34.9K</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Median</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 50%; background: var(--accent)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$163K</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Mean</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 55%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$180K</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Max</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 100%; background: var(--red)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$755K</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="vis-card">
+              <h4>🔗 Top Correlations with SalePrice</h4>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar">
+                  <div class="mb-label">OverallQual</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 79%; background: var(--red)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.79</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">GrLivArea</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 70%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.70</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">GarageCars</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 64%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.64</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">TotalBsmtSF</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 61%; background: var(--accent)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.61</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">FullBath</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 56%; background: var(--accent)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">0.56</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="vis-card">
+              <h4>🏘️ Top Neighborhoods by Median Price</h4>
+              <div class="mini-bar-wrap">
+                <div class="mini-bar">
+                  <div class="mb-label">NoRidge</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 100%; background: var(--green)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$335K</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">NridgHt</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 90%; background: var(--green)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$315K</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">StoneBr</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 85%; background: var(--gold)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$278K</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Timber</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 65%; background: var(--accent)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$228K</div>
+                </div>
+                <div class="mini-bar">
+                  <div class="mb-label">Veenker</div>
+                  <div class="mini-bar-track">
+                    <div
+                      class="mini-bar-fill"
+                      style="width: 60%; background: var(--accent)"
+                    ></div>
+                  </div>
+                  <div class="mb-val">$218K</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-placeholder" id="reg-eda-chart">
+            <div style="font-size: 2rem">📊</div>
+            <div>Load live regression metrics chart from API</div>
+            <button class="load-btn purple" onclick="loadRegChart()">
+              Load Chart
+            </button>
+          </div>
+        </div>
+
+        <!-- Models Tab -->
+        <div id="reg-tab-models" class="tab-panel">
+          <div class="section-title" style="font-size: 1.1rem">
+            Regression Algorithms
+          </div>
+          <div class="algo-grid">
+            <div class="algo-card">
+              <div class="algo-name">Linear Regression</div>
+              <div class="algo-desc">
+                Fits a hyperplane minimizing sum of squared residuals. Simple,
+                fast, interpretable. Struggles with multicollinear features and
+                outliers.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical R²</span
+                ><span class="m-value">~0.83</span>
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">RMSE</span
+                ><span class="m-value">~$29K</span>
+              </div>
+            </div>
+            <div class="algo-card" style="border-color: var(--gold)">
+              <div class="algo-name">Ridge Regression 🏆</div>
+              <div class="algo-desc">
+                Linear regression with L2 regularization (α=10). Prevents
+                overfitting from multicollinear features (80+ correlated housing
+                attributes). Best on this dataset.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical R²</span
+                ><span class="m-value" style="color: var(--gold)">~0.88</span>
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">RMSE</span
+                ><span class="m-value" style="color: var(--gold)">~$24K</span>
+              </div>
+            </div>
+            <div class="algo-card">
+              <div class="algo-name">SVR (RBF Kernel)</div>
+              <div class="algo-desc">
+                Support Vector Regression with radial basis function kernel.
+                Finds a tube around the regression line and minimizes
+                violations. Robust to outliers in SalePrice.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical R²</span
+                ><span class="m-value">~0.85</span>
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">RMSE</span
+                ><span class="m-value">~$27K</span>
+              </div>
+            </div>
+            <div class="algo-card">
+              <div class="algo-name">Polynomial Regression</div>
+              <div class="algo-desc">
+                Extends linear regression with polynomial feature interactions
+                (degree=2). Captures non-linear effects but risks overfitting on
+                small datasets without regularization.
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">Typical R²</span
+                ><span class="m-value">~0.80</span>
+              </div>
+              <div class="algo-metric">
+                <span class="m-label">RMSE</span
+                ><span class="m-value">~$32K</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="reg-results-table">
+            <div class="chart-placeholder" style="height: 200px">
+              <div class="spinner"></div>
+              <div style="margin-top: 0.75rem">Loading from API...</div>
+              <button
+                class="load-btn purple"
+                onclick="loadRegResults()"
+                style="margin-top: 0.5rem"
+              >
+                Load Results
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="conclusion-card"
+            style="
+              background: linear-gradient(
+                135deg,
+                var(--card),
+                rgba(124, 58, 237, 0.06)
+              );
+              border-color: rgba(124, 58, 237, 0.3);
+            "
+          >
+            <h3>Why Ridge Regression Performs Best</h3>
+            <div class="findings">
+              <div class="finding">
+                <div class="fi-icon">🏠</div>
+                <div class="fi-text">
+                  <strong>High Dimensionality</strong>With 80+ features (many
+                  correlated), Ridge's L2 penalty shrinks redundant coefficients
+                  without zeroing them out.
+                </div>
+              </div>
+              <div class="finding">
+                <div class="fi-icon">📉</div>
+                <div class="fi-text">
+                  <strong>Multicollinearity</strong>GrLivArea and 1stFlrSF are
+                  correlated; Ridge handles this better than plain Linear
+                  Regression which becomes unstable.
+                </div>
+              </div>
+              <div class="finding">
+                <div class="fi-icon">🔄</div>
+                <div class="fi-text">
+                  <strong>Log Transform</strong>Applying log1p to SalePrice
+                  normalizes the skewed target — all models benefit but Ridge
+                  exploits it best.
+                </div>
+              </div>
+              <div class="finding">
+                <div class="fi-icon">⚖️</div>
+                <div class="fi-text">
+                  <strong>Balanced Bias-Variance</strong>Ridge trades a bit of
+                  bias for much lower variance, resulting in better
+                  generalization on the validation set.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Predict Tab Regression -->
+        <div id="reg-tab-predict" class="tab-panel">
+          <div
+            class="predict-form"
+            style="border-color: rgba(124, 58, 237, 0.3)"
+          >
+            <h3>🔬 Test the Regression Model</h3>
+            <p
+              style="
+                font-size: 0.82rem;
+                color: var(--muted);
+                margin-bottom: 1.25rem;
+              "
+            >
+              Enter house features to predict the sale price. Uses default
+              values — adjust any field and click Predict. The API at
+              <code style="color: #a78bfa"></code>
+              must be running.
+            </p>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Overall Quality (1–10)</label
+                ><input id="r_qual" type="number" value="7" min="1" max="10" />
+              </div>
+              <div class="form-field">
+                <label>Living Area (sq ft)</label
+                ><input id="r_area" type="number" value="1500" />
+              </div>
+              <div class="form-field">
+                <label>Garage Cars</label
+                ><input id="r_garage" type="number" value="2" min="0" max="5" />
+              </div>
+              <div class="form-field">
+                <label>Basement Area (sq ft)</label
+                ><input id="r_bsmt" type="number" value="800" />
+              </div>
+              <div class="form-field">
+                <label>Full Bathrooms</label
+                ><input id="r_bath" type="number" value="2" min="0" />
+              </div>
+              <div class="form-field">
+                <label>Year Built</label
+                ><input
+                  id="r_year"
+                  type="number"
+                  value="2000"
+                  min="1800"
+                  max="2023"
+                />
+              </div>
+              <div class="form-field">
+                <label>Year Remodeled</label
+                ><input
+                  id="r_remod"
+                  type="number"
+                  value="2005"
+                  min="1800"
+                  max="2023"
+                />
+              </div>
+              <div class="form-field">
+                <label>Lot Area (sq ft)</label
+                ><input id="r_lot" type="number" value="8500" />
+              </div>
+              <div class="form-field">
+                <label>MS SubClass</label>
+                <select id="r_sub">
+                  <option value="20">20 - 1-Story 1946+</option>
+                  <option value="60">60 - 2-Story 1946+</option>
+                  <option value="30">30 - 1-Story 1945-</option>
+                  <option value="120">120 - 1-Story PUD</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Neighborhood</label>
+                <select id="r_neigh">
+                  <option>NAmes</option>
+                  <option>CollgCr</option>
+                  <option>OldTown</option>
+                  <option>Edwards</option>
+                  <option>Somerst</option>
+                  <option>NridgHt</option>
+                  <option>NoRidge</option>
+                  <option>StoneBr</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+              <button
+                class="load-btn purple"
+                onclick="predictRegression()"
+                id="reg-pred-btn"
+              >
+                🚀 Predict Sale Price
+              </button>
+              <button
+                class="load-btn"
+                onclick="fillDefaultReg()"
+                style="
+                  background: var(--surface);
+                  color: var(--text);
+                  border: 1px solid var(--border);
+                "
+              >
+                Reset to Defaults
+              </button>
+            </div>
+          </div>
+          <div id="reg-result" style="display: none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════ -->
+    <script>
+      const API = ""; // Same server - no domain needed
+
+      // ── Navigation ─────────────────────────────────────
+      function showPage(id) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("page-" + id).classList.add("active");
+        document.querySelectorAll(".nav-btn").forEach((b) => {
+          if (b.textContent.toLowerCase().includes(id.slice(0, 3)))
+            b.classList.add("active");
+        });
+        window.scrollTo(0, 0);
+      }
+
+      function switchTab(page, tab) {
+        document
+          .querySelectorAll(`#page-${page} .tab-btn`)
+          .forEach((b) => b.classList.remove("active"));
+        document
+          .querySelectorAll(`#page-${page} .tab-panel`)
+          .forEach((p) => p.classList.remove("active"));
+        const btn = event.target;
+        btn.classList.add("active");
+        const panel = document.getElementById(`${page}-tab-${tab}`);
+        if (panel) panel.classList.add("active");
+      }
+
+      // ── API Helpers ─────────────────────────────────────
+      async function apiFetch(path, opts = {}) {
+        try {
+          const r = await fetch(API + path, {
+            headers: { "Content-Type": "application/json" },
+            ...opts,
+          });
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return await r.json();
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function imgTag(b64) {
+        return `<img src="data:image/png;base64,${b64}" style="width:100%;border-radius:8px;display:block"/>`;
+      }
+
+      // ── Classification ──────────────────────────────────
+      async function loadClfChart() {
+        const el = document.getElementById("clf-eda-chart");
+        el.innerHTML = '<div class="spinner"></div>';
+        const data = await apiFetch("/api/classification/charts");
+        if (data && data.chart_base64) {
+          el.innerHTML = imgTag(data.chart_base64);
+        } else {
+          el.innerHTML =
+            '<span style="color:var(--red)">⚠ Could not load — is the API running?</span><br><small style="color:var(--muted)">Run: uvicorn fast_api:app --reload --port 8000</small>';
+        }
+      }
+
+      async function loadClfResults() {
+        const el = document.getElementById("clf-results-table");
+        el.innerHTML =
+          '<div style="text-align:center;padding:2rem"><div class="spinner" style="margin:0 auto"></div></div>';
+        const data = await apiFetch("/api/classification/results");
+        if (data && data.models) {
+          const maxAcc = Math.max(...data.models.map((m) => m.accuracy));
+          let rows = data.models
+            .map((m) => {
+              const isBest = m.name === data.best_model;
+              const pct = m.accuracy;
+              return `<tr>
+        <td style="font-weight:600">${m.name} ${isBest ? '<span class="badge-best">🏆 Best</span>' : ""}</td>
+        <td>
+          <span style="font-family:var(--font-mono);font-size:.85rem;color:${isBest ? "var(--gold)" : "var(--text)"}">${pct.toFixed(2)}%</span>
+          <div class="acc-bar"><div class="acc-fill ${isBest ? "gold" : ""}" style="width:${pct}%"></div></div>
+        </td>
+      </tr>`;
+            })
+            .join("");
+          el.innerHTML = `<table class="model-table">
+      <thead><tr><th>Model</th><th>Accuracy</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+        } else {
+          el.innerHTML =
+            '<p style="color:var(--red);padding:1rem">⚠ API unreachable. Start with: <code>uvicorn fast_api:app --reload</code></p>';
+        }
+      }
+
+      async function predictClassification() {
+        const btn = document.getElementById("clf-pred-btn");
+        const el = document.getElementById("clf-result");
+        btn.disabled = true;
+        btn.textContent = "Predicting…";
+        el.style.display = "block";
+        el.innerHTML =
+          '<div style="text-align:center;padding:2rem"><div class="spinner" style="margin:0 auto"></div></div>';
+
+        const payload = {
+          person_age: +document.getElementById("c_age").value,
+          person_income: +document.getElementById("c_income").value,
+          person_home_ownership: document.getElementById("c_home").value,
+          person_emp_length: +document.getElementById("c_emp").value,
+          loan_intent: document.getElementById("c_intent").value,
+          loan_grade: document.getElementById("c_grade").value,
+          loan_amnt: +document.getElementById("c_amnt").value,
+          loan_int_rate: +document.getElementById("c_rate").value,
+          loan_percent_income: +document.getElementById("c_pct").value,
+          cb_person_default_on_file: document.getElementById("c_prev").value,
+          cb_person_cred_hist_length: +document.getElementById("c_cred").value,
+        };
+
+        const data = await apiFetch("/api/classification/predict", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+        btn.disabled = false;
+        btn.textContent = "🚀 Predict Default Risk";
+
+        if (!data) {
+          el.innerHTML = `<div class="result-box"><p style="color:var(--red)">⚠ API unreachable. Make sure the server is running at <code>${API}</code></p></div>`;
+          return;
+        }
+
+        const isDefault = data.verdict === "DEFAULT RISK";
+        const bestProb =
+          data.predictions[data.best_model]?.default_probability_pct;
+        const probText =
+          bestProb !== null ? `${bestProb}% default probability` : "";
+
+        let predsHtml = Object.entries(data.predictions)
+          .map(
+            ([name, v]) => `
+    <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.82rem">
+      <span>${name}</span>
+      <span style="font-family:var(--font-mono);color:${v.prediction === 1 ? "var(--red)" : "var(--green)"}">${v.prediction === 1 ? "DEFAULT" : "SAFE"}${v.default_probability_pct !== null ? " (" + v.default_probability_pct + "%)" : ""}</span>
+    </div>`,
+          )
+          .join("");
+
+        el.innerHTML = `<div class="result-box">
+    <div class="verdict ${isDefault ? "danger" : "safe"}">${isDefault ? "⚠ HIGH DEFAULT RISK" : "✅ LOW DEFAULT RISK"}</div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Best model (${data.best_model}): ${probText}</p>
+    <div style="margin-bottom:1rem">${predsHtml}</div>
+    ${data.chart_base64 ? `<div class="result-chart">${imgTag(data.chart_base64)}</div>` : ""}
+  </div>`;
+      }
+
+      function fillDefaultClf() {
+        document.getElementById("c_age").value = 30;
+        document.getElementById("c_income").value = 60000;
+        document.getElementById("c_home").value = "RENT";
+        document.getElementById("c_emp").value = 5;
+        document.getElementById("c_intent").value = "PERSONAL";
+        document.getElementById("c_grade").value = "B";
+        document.getElementById("c_amnt").value = 10000;
+        document.getElementById("c_rate").value = 12.0;
+        document.getElementById("c_pct").value = 0.15;
+        document.getElementById("c_prev").value = "N";
+        document.getElementById("c_cred").value = 4;
+      }
+
+      // ── Regression ──────────────────────────────────────
+      async function loadRegChart() {
+        const el = document.getElementById("reg-eda-chart");
+        el.innerHTML = '<div class="spinner"></div>';
+        const data = await apiFetch("/api/regression/charts");
+        if (data && data.chart_base64) {
+          el.innerHTML = imgTag(data.chart_base64);
+        } else {
+          el.innerHTML =
+            '<span style="color:var(--red)">⚠ Could not load — is the API running?</span><br><small style="color:var(--muted)">Run: uvicorn fast_api:app --reload --port 8000</small>';
+        }
+      }
+
+      async function loadRegResults() {
+        const el = document.getElementById("reg-results-table");
+        el.innerHTML =
+          '<div style="text-align:center;padding:2rem"><div class="spinner" style="margin:0 auto"></div></div>';
+        const data = await apiFetch("/api/regression/results");
+        if (data && data.models) {
+          let rows = data.models
+            .map((m) => {
+              const isBest = m.name === data.best_model;
+              return `<tr>
+        <td style="font-weight:600">${m.name} ${isBest ? '<span class="badge-best">🏆 Best</span>' : ""}</td>
+        <td style="font-family:var(--font-mono);color:${isBest ? "var(--gold)" : "var(--green)"}">${m.r2.toFixed(4)}</td>
+        <td style="font-family:var(--font-mono)">$${m.rmse.toLocaleString()}</td>
+        <td style="font-family:var(--font-mono)">$${m.mae.toLocaleString()}</td>
+      </tr>`;
+            })
+            .join("");
+          el.innerHTML = `<table class="model-table">
+      <thead><tr><th>Model</th><th>R² Score</th><th>RMSE</th><th>MAE</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+        } else {
+          el.innerHTML =
+            '<p style="color:var(--red);padding:1rem">⚠ API unreachable. Start with: <code>uvicorn fast_api:app --reload</code></p>';
+        }
+      }
+
+      async function predictRegression() {
+        const btn = document.getElementById("reg-pred-btn");
+        const el = document.getElementById("reg-result");
+        btn.disabled = true;
+        btn.textContent = "Predicting…";
+        el.style.display = "block";
+        el.innerHTML =
+          '<div style="text-align:center;padding:2rem"><div class="spinner" style="margin:0 auto"></div></div>';
+
+        const payload = {
+          OverallQual: +document.getElementById("r_qual").value,
+          GrLivArea: +document.getElementById("r_area").value,
+          GarageCars: +document.getElementById("r_garage").value,
+          TotalBsmtSF: +document.getElementById("r_bsmt").value,
+          FullBath: +document.getElementById("r_bath").value,
+          YearBuilt: +document.getElementById("r_year").value,
+          YearRemodAdd: +document.getElementById("r_remod").value,
+          LotArea: +document.getElementById("r_lot").value,
+          MSSubClass: +document.getElementById("r_sub").value,
+          Neighborhood: document.getElementById("r_neigh").value,
+        };
+
+        const data = await apiFetch("/api/regression/predict", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+        btn.disabled = false;
+        btn.textContent = "🚀 Predict Sale Price";
+
+        if (!data) {
+          el.innerHTML = `<div class="result-box"><p style="color:var(--red)">⚠ API unreachable. Make sure the server is running at <code>${API}</code></p></div>`;
+          return;
+        }
+
+        let predsHtml = Object.entries(data.predictions)
+          .map(
+            ([name, price]) => `
+    <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.82rem">
+      <span>${name}</span>
+      <span style="font-family:var(--font-mono);color:var(--green)">$${price.toLocaleString()}</span>
+    </div>`,
+          )
+          .join("");
+
+        el.innerHTML = `<div class="result-box">
+    <div class="verdict safe">🏠 $${data.best_prediction_usd.toLocaleString()}</div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Estimated Sale Price — Best model: ${data.best_model}</p>
+    <div style="margin-bottom:1rem">${predsHtml}</div>
+    ${data.chart_base64 ? `<div class="result-chart">${imgTag(data.chart_base64)}</div>` : ""}
+  </div>`;
+      }
+
+      function fillDefaultReg() {
+        document.getElementById("r_qual").value = 7;
+        document.getElementById("r_area").value = 1500;
+        document.getElementById("r_garage").value = 2;
+        document.getElementById("r_bsmt").value = 800;
+        document.getElementById("r_bath").value = 2;
+        document.getElementById("r_year").value = 2000;
+        document.getElementById("r_remod").value = 2005;
+        document.getElementById("r_lot").value = 8500;
+        document.getElementById("r_sub").value = 20;
+        document.getElementById("r_neigh").value = "NAmes";
+      }
+
+      // animate mini bars on load
+      window.addEventListener("load", () => {
+        document.querySelectorAll(".mini-bar-fill").forEach((el) => {
+          const w = el.style.width;
+          el.style.width = "0";
+          setTimeout(() => (el.style.width = w), 300);
+        });
+      });
+    </script>
+  </body>
+</html>
