@@ -8,17 +8,17 @@ Run with:
 """
 
 import io
-import os
 import pickle
 import base64
 import warnings
 import numpy as np
 import pandas as pd
+import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# Always find models/ relative to this file, no matter where Railway runs from
+# Always resolve models/ relative to this file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 
@@ -41,8 +41,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
 )
 
 # ═══════════════════════════════════════════════════════════════
@@ -86,7 +88,8 @@ def load_models():
     global clf_models, clf_scaler, clf_features, clf_results
     global reg_pipelines, reg_results, reg_numeric_cols, reg_categorical_cols
 
-    print(f"[INFO] Looking for models in: {MODELS_DIR}")
+    print(f"[INFO] Models dir: {MODELS_DIR}")
+    print(f"[INFO] Files found: {os.listdir(MODELS_DIR) if os.path.exists(MODELS_DIR) else 'DIR NOT FOUND'}")
 
     try:
         with open(os.path.join(MODELS_DIR, "clf_models.pkl"), "rb") as f:
@@ -98,8 +101,8 @@ def load_models():
         with open(os.path.join(MODELS_DIR, "clf_results.pkl"), "rb") as f:
             clf_results = pickle.load(f)
         print("[OK] Classification models loaded from pkl.")
-    except FileNotFoundError as e:
-        print(f"[ERROR] Classification pkl not found: {e}")
+    except Exception as e:
+        print(f"[ERROR] Classification pkl failed: {e}")
 
     try:
         with open(os.path.join(MODELS_DIR, "reg_pipelines.pkl"), "rb") as f:
@@ -111,8 +114,8 @@ def load_models():
             reg_numeric_cols     = meta["numeric_cols"]
             reg_categorical_cols = meta["categorical_cols"]
         print("[OK] Regression models loaded from pkl.")
-    except FileNotFoundError as e:
-        print(f"[ERROR] Regression pkl not found: {e}")
+    except Exception as e:
+        print(f"[ERROR] Regression pkl failed: {e}")
 
 
 # ═══════════════════════════════════════════════════════════════
